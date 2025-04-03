@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Document Comparison System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --background: #f8fafc;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #1e293b;
+            --border: #e2e8f0;
+            --input: #e2e8f0;
+            --ring: #94a3b8;
+            --radius: 0.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--foreground);
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            width: 2rem;
+            height: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--foreground);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-image {
+            flex: 1;
+            max-width: 500px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .upload-section {
+            background-color: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+        }
+
+        .upload-container {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .upload-container:hover {
+            border-color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .upload-icon {
+            color: var(--primary);
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .button-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .button-secondary {
+            background-color: white;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .button-secondary:hover {
+            background-color: var(--background);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background-color: var(--card);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-icon {
+            color: var(--primary);
+            width: 2rem;
+            height: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .chatbot-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+        }
+
+        .chatbot-button {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .chatbot-button:hover {
+            transform: scale(1.05);
+        }
+
+        .chatbot-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .chatbot-panel {
+            position: absolute;
+            bottom: 4.5rem;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background-color: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-header {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .message-bot {
+            background-color: #f1f5f9;
+            color: var(--foreground);
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .message-user {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        .chatbot-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .chatbot-send {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            width: 2.5rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-send:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .send-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .file-list {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: #f8fafc;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .file-icon {
+            color: var(--primary);
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-action {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .file-action:hover {
+            color: var(--foreground);
+        }
+
+        .compare-button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+
+        footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .hero-image {
+                max-width: 100%;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .chatbot-panel {
+                width: calc(100vw - 3rem);
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <style>
+        /* Updated Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(230, 230, 230, 0.8);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--foreground);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: translateX(4px);
+        }
+        
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 8px;
+            padding: 6px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+        }
+        
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        nav a {
+            position: relative;
+            color: var(--card-foreground);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        nav a.active {
+            color: var(--primary);
+        }
+        
+        nav a.active::after {
+            width: 100%;
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            
+            nav {
+                position: fixed;
+                top: 4.5rem;
+                right: -100%;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(12px);
+                width: 70%;
+                height: calc(100vh - 4.5rem);
+                padding: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: -4px 0 16px rgba(0, 0, 0, 0.05);
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .logo span {
+                display: none;
+            }
+        }
+        </style>
+        
+        <!-- Updated Header HTML -->
+        <header>
+            <div class="logo">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span>InsuranceIQ</span>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <button class="menu-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"></path>
+                </svg>
+            </button>
+        </header>
+        
+        <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('nav');
+        
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+        
+        // Close menu on click outside
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
+                nav.classList.remove('active');
+            }
+        });
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                nav.classList.remove('active');
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        </script>
+
+    <main>
+        <style>
+            /* Updated Hero Section */
+            .hero {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                padding: 4rem 0;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, 
+                    rgba(37, 99, 235, 0.03) 0%, 
+                    rgba(14, 165, 233, 0.03) 50%, 
+                    rgba(139, 92, 246, 0.03) 100%);
+                z-index: -1;
+                animation: rotate 20s linear infinite;
+            }
+            
+            @keyframes rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .hero-content {
+                position: relative;
+                z-index: 1;
+            }
+            
+            .hero-title {
+                font-size: 2.75rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: fadeInUp 0.8s ease;
+            }
+            
+            .hero-description {
+                font-size: 1.125rem;
+                color: var(--card-foreground);
+                margin-bottom: 2rem;
+                line-height: 1.6;
+                opacity: 0.9;
+                max-width: 28rem;
+                animation: fadeInUp 0.8s ease 0.2s;
+                animation-fill-mode: backwards;
+            }
+            
+            .hero .button-primary {
+                padding: 1rem 2rem;
+                border-radius: var(--radius);
+                font-size: 1rem;
+                font-weight: 600;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: fadeInUp 0.8s ease 0.4s;
+                animation-fill-mode: backwards;
+            }
+            
+            .hero .button-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
+            }
+            
+            .hero-image {
+                position: relative;
+                border-radius: 1.5rem;
+                overflow: hidden;
+                transform: perspective(1000px) rotateY(-5deg);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+                transition: transform 0.3s ease;
+            }
+            
+            .hero-image:hover {
+                transform: perspective(1000px) rotateY(0deg);
+            }
+            
+            .hero-image::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, 
+                    rgba(37, 99, 235, 0.1) 0%, 
+                    rgba(139, 92, 246, 0.1) 100%);
+                mix-blend-mode: multiply;
+            }
+            
+            .hero-image img {
+                width: 100%;
+                height: auto;
+                display: block;
+                transform: scale(1.05);
+                transition: transform 0.3s ease;
+            }
+            
+            .hero-image:hover img {
+                transform: scale(1);
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .hero {
+                    grid-template-columns: 1fr;
+                    padding: 2rem 0;
+                    gap: 2rem;
+                }
+                
+                .hero-title {
+                    font-size: 2rem;
+                }
+                
+                .hero-image {
+                    transform: none;
+                    order: -1;
+                }
+                
+                .hero-description {
+                    max-width: 100%;
+                }
+            }
+            </style>
+            
+            <!-- Updated Hero Section HTML -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">Smart Insurance Document Comparison</h1>
+                    <p class="hero-description">
+                        Transform complex insurance policies into clear, actionable insights. 
+                        Use AI-powered analysis to compare coverage details, costs, and limitations 
+                        across multiple documents in seconds.
+                    </p>
+                    <button class="button button-primary">
+                        Start Comparing
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.5rem;">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <line x1="13" y1="18" x2="19" y2="12"></line>
+                            <line x1="13" y1="6" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Insurance document comparison interface">
+                </div>
+            </section>
+
+        <!-- Add this CSS to your existing style section -->
+<style>
+    /* Interactive Boxes Section */
+    .box-container {
+        position: relative;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 4rem 0;
+    }
+
+    .main-box {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #6c5ce7 0%, #3498db 100%);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
+        z-index: 2;
+    }
+
+    .box-container:hover .main-box {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    .box {
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        background: white;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 12px;
+        color: #2c3e50;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .box i {
+        font-size: 2rem;
+        color: #6c5ce7;
+    }
+
+    .box:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(108, 92, 231, 0.2);
+    }
+
+    .box-container:hover .box-left {
+        opacity: 1;
+        transform: translateX(-200%);
+    }
+
+    .box-container:hover .box-center {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .box-container:hover .box-right {
+        opacity: 1;
+        transform: translateX(200%);
+    }
+
+    .box-left {
+        transform: translateX(-400%);
+        z-index: 1;
+    }
+
+    .box-center {
+        transform: translateY(100%);
+        z-index: 3;
+    }
+
+    .box-right {
+        transform: translateX(400%);
+        z-index: 1;
+    }
+</style>
+
+<!-- Add this HTML right after the header section -->
+<div class="box-container">
+    <div class="main-box">Start</div>
+    <div class="box box-left">
+        <i class="fas fa-chart-bar"></i>
+        Analyze
+    </div>
+    <div class="box box-center">
+        <i class="fas fa-balance-scale"></i>
+        Compare
+    </div>
+    <div class="box box-right">
+        <i class="fas fa-shopping-cart"></i>
+        Buy
+    </div>
+<!-- Add this to your CSS -->
+<style>
+    /* Updated Box Styles */
+    .box-container:hover .box-bottom {
+        opacity: 1;
+        transform: translateY(120%);
+    }
+
+    .box-bottom {
+        transform: translateY(400%);
+        z-index: 1;
+        background: linear-gradient(135deg, #4cc9f0 0%, #6c5ce7 100%);
+        color: white;
+    }
+
+    .box-bottom i {
+        color: white;
+    }
+</style>
+
+<!-- Updated HTML for boxes -->
+<div class="box-container">
+    <div class="main-box">Start</div>
+    <div class="box box-left">
+        <i class="fas fa-chart-bar"></i>
+        Analyze
+    </div>
+    <div class="box box-center">
+        <i class="fas fa-balance-scale"></i>
+        Compare
+    </div>
+    <div class="box box-right">
+        <i class="fas fa-shopping-cart"></i>
+        Buy
+    </div>
+</div>
+
+<!-- Add this JavaScript -->
+<script>
+    // File upload trigger
+    document.getElementById('uploadBox').addEventListener('click', function() {
+        document.getElementById('fileUpload').click();
+    });
+
+    // Optional: Add visual feedback
+    document.getElementById('uploadBox').addEventListener('mousedown', function() {
+        this.style.transform = 'translateY(120%) scale(0.95)';
+    });
+    
+    document.getElementById('uploadBox').addEventListener('mouseup', function() {
+        this.style.transform = 'translateY(120%) scale(1)';
+    });
+</script>
+</div>
+<br>
+<br>
+
+<!-- Add this CSS -->
+<style>
+    /* Rolling Windows Styles */
+    .windows-container {
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        margin: 4rem auto;
+        height: 500px;
+        perspective: 1000px;
+    }
+
+    .window-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .window {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        opacity: 0;
+        transform: translateX(0) scale(0.8);
+        z-index: 1;
+        backdrop-filter: blur(10px);
+    }
+
+    .window.active {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        z-index: 3;
+    }
+
+    .window.prev {
+        opacity: 0.6;
+        transform: translateX(-60%) scale(0.85);
+        filter: blur(2px);
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .window.next {
+        opacity: 0.6;
+        transform: translateX(60%) scale(0.85);
+        filter: blur(2px);
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .window-content {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease 0.2s;
+        mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0,0,0,1) 10%,
+            rgba(0,0,0,1) 90%,
+            transparent 100%
+        );
+    }
+
+    .active .window-content {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .prev .window-content,
+    .next .window-content {
+        opacity: 0.4;
+        filter: blur(1px);
+        transform: scale(0.95);
+        pointer-events: none;
+    }
+
+    .prev .window-content {
+        transform: translateX(-20px) scale(0.95);
+    }
+
+    .next .window-content {
+        transform: translateX(20px) scale(0.95);
+    }
+
+    .window-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        color: #2c3e50;
+    }
+
+    .prev .window-content h2,
+    .next .window-content h2 {
+        font-size: 1.4rem;
+        opacity: 0.7;
+    }
+
+    .window-content p {
+        transition: all 0.3s ease;
+        line-height: 1.7;
+        color: #4a5568;
+    }
+
+    .prev .window-content p,
+    .next .window-content p {
+        color: #718096;
+        opacity: 0.6;
+    }
+
+    .window-nav {
+        position: absolute;
+        bottom: -2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1.5rem;
+        z-index: 4;
+    }
+
+    .nav-dot {
+        width: 14px;
+        height: 14px;
+        background: rgba(108, 92, 231, 0.3);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(108, 92, 231, 0.2);
+    }
+
+    .nav-dot.active {
+        background: #6c5ce7;
+        transform: scale(1.4);
+    }
+
+    .window-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(108, 92, 231, 0.1);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 4;
+        transition: all 0.3s ease;
+    }
+
+    .window-arrow:hover {
+        background: #6c5ce7;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .window-arrow i {
+        color: #6c5ce7;
+        font-size: 1.2rem;
+    }
+
+    .window-arrow:hover i {
+        color: white;
+    }
+
+    .arrow-prev {
+        left: -60px;
+    }
+
+    .arrow-next {
+        right: -60px;
+    }
+</style>
+
+<!-- Add this HTML -->
+<div class="windows-container">
+    <button class="window-arrow arrow-prev">❮</button>
+    <button class="window-arrow arrow-next">❯</button>
+    
+    <div class="window-wrapper">
+        <div class="window active" id="window1">
+            <div class="window-content">
+                <h2>📊 Policy Analysis</h2>
+                <p>Advanced AI-driven analysis of insurance documents...</p>
+            </div>
+        </div>
+        
+        <div class="window" id="window2">
+            <div class="window-content">
+                <h2>⚖️ Comparison Engine</h2>
+                <p>Detailed side-by-side policy comparisons...</p>
+            </div>
+        </div>
+        
+        <div class="window" id="window3">
+            <div class="window-content">
+                <h2>🛍 Purchase Options</h2>
+                <p>Curated insurance plans selection...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="window-nav">
+        <div class="nav-dot active" data-window="1"></div>
+        <div class="nav-dot" data-window="2"></div>
+        <div class="nav-dot" data-window="3"></div>
+    </div>
+</div>
+
+<!-- Add this JavaScript -->
+<script>
+    const windows = document.querySelectorAll('.window');
+    const dots = document.querySelectorAll('.nav-dot');
+    const prevArrow = document.querySelector('.arrow-prev');
+    const nextArrow = document.querySelector('.arrow-next');
+    let currentWindow = 0;
+
+    function updateWindows() {
+        windows.forEach((window, index) => {
+            window.classList.remove('active', 'prev', 'next');
+            
+            if(index === currentWindow) {
+                window.classList.add('active');
+            } else if(index === currentWindow - 1 || 
+                     (currentWindow === 0 && index === windows.length - 1)) {
+                window.classList.add('prev');
+            } else if(index === currentWindow + 1 || 
+                     (currentWindow === windows.length - 1 && index === 0)) {
+                window.classList.add('next');
+            }
+        });
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentWindow);
+        });
+    }
+
+    function showNext() {
+        currentWindow = (currentWindow + 1) % windows.length;
+        updateWindows();
+    }
+
+    function showPrev() {
+        currentWindow = (currentWindow - 1 + windows.length) % windows.length;
+        updateWindows();
+    }
+
+    // Event Listeners
+    prevArrow.addEventListener('click', showPrev);
+    nextArrow.addEventListener('click', showNext);
+    
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentWindow = index;
+            updateWindows();
+        });
+    });
+
+    // Auto-rotate
+    let autoRotate = setInterval(showNext, 8000);
+    
+    // Pause on hover
+    document.querySelector('.windows-container').addEventListener('mouseenter', () => {
+        clearInterval(autoRotate);
+    });
+    
+    document.querySelector('.windows-container').addEventListener('mouseleave', () => {
+        autoRotate = setInterval(showNext, 8000);
+    });
+
+    // Initial setup
+    updateWindows();
+</script>
+
+
+<!-- Upload Section HTML -->
+<section class="upload-section">
+    <h2 class="section-title">Upload Insurance Documents</h2>
+    <div class="upload-container" id="uploadContainer">
+        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <p class="upload-text">Drag & Drop Documents Here</p>
+        <p class="upload-hint">Supported formats: PDF, DOCX (Max 25MB)</p>
+        <input type="file" id="file-upload" class="file-input" multiple accept=".pdf,.docx">
+    </div>
+
+    <div class="file-list" id="file-list">
+        <!-- Files will be added here dynamically -->
+    </div>
+
+    <button class="button button-primary compare-button" id="compare-button" disabled>
+        Compare Documents
+    </button>
+</section>
+
+        <section class="features">
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <h3 class="feature-title">Smart Comparison</h3>
+                <p class="feature-description">
+                    Our AI-powered system aligns matching sections across documents to highlight variations in coverage, costs, and terms.
+                </p>
+            </div>
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <h3 class="feature-title">Plain Language Explanations</h3>
+                <p class="feature-description">
+                    Complex insurance terms are translated into understandable language, making it easier to grasp policy differences.
+                </p>
+            </div>
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h3 class="feature-title">Customizable Reports</h3>
+                <p class="feature-description">
+                    Generate detailed reports highlighting the most important differences between your insurance policies.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 InsuranceIQ. All rights reserved.</p>
+    </footer>
+
+    <div class="chatbot-container">
+        <div class="chatbot-button" id="chatbot-toggle">
+            <svg class="chatbot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </div>
+        <div class="chatbot-panel" id="chatbot-panel">
+            <div class="chatbot-header">
+                <span>Insurance Assistant</span>
+                <svg class="chatbot-close" id="chatbot-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message message-bot">
+                    Hello! I'm your insurance document assistant. How can I help you today?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Type your message...">
+                <button class="chatbot-send" id="chatbot-send">
+                    <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot functionality
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotPanel = document.getElementById('chatbot-panel');
+        const chatbotClose = document.getElementById('chatbot-close');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+        const chatbotInput = document.getElementById('chatbot-input');
+        const chatbotSend = document.getElementById('chatbot-send');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotPanel.style.display = 'flex';
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            chatbotPanel.style.display = 'none';
+        });
+
+        function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                // Add user message
+                const userMessageElement = document.createElement('div');
+                userMessageElement.classList.add('message', 'message-user');
+                userMessageElement.textContent = message;
+                chatbotMessages.appendChild(userMessageElement);
+                
+                // Clear input
+                chatbotInput.value = '';
+                
+                // Scroll to bottom
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                
+                // Simulate bot response after a short delay
+                setTimeout(() => {
+                    const botResponses = [
+                        "I can help you compare insurance policies. Upload your documents to get started.",
+                        "Our system can extract coverage details, costs, exclusions, and limitations from your insurance documents.",
+                        "Would you like me to explain how our document comparison works?",
+                        "I can answer questions about insurance terminology and help you understand policy differences.",
+                        "Is there anything specific you'd like to know about your insurance coverage?"
+                    ];
+                    
+                    const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+                    
+                    const botMessageElement = document.createElement('div');
+                    botMessageElement.classList.add('message', 'message-bot');
+                    botMessageElement.textContent = randomResponse;
+                    chatbotMessages.appendChild(botMessageElement);
+                    
+                    // Scroll to bottom again
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        chatbotSend.addEventListener('click', sendMessage);
+        
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // File upload functionality
+        const fileUpload = document.getElementById('file-upload');
+        const fileList = document.getElementById('file-list');
+        const compareButton = document.getElementById('compare-button');
+        
+        fileUpload.addEventListener('change', handleFileUpload);
+        
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    addFileToList(files[i]);
+                }
+                
+                compareButton.disabled = fileList.children.length < 2;
+            }
+        }
+        
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.classList.add('file-item');
+            
+            const fileSize = (file.size / 1024).toFixed(2) + ' KB';
+            
+            fileItem.innerHTML = `
+                <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${fileSize}</div>
+                </div>
+                <div class="file-actions">
+                    <svg class="file-action file-remove" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            `;
+            
+            const removeButton = fileItem.querySelector('.file-remove');
+            removeButton.addEventListener('click', () => {
+                fileItem.remove();
+                compareButton.disabled = fileList.children.length < 2;
+            });
+            
+            fileList.appendChild(fileItem);
+        }
+
+        // Drag and drop functionality
+        const uploadContainer = document.querySelector('.upload-container');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadContainer.style.borderColor = 'var(--primary)';
+            uploadContainer.style.backgroundColor = 'rgba(37, 99, 235, 0.05)';
+        }
+        
+        function unhighlight() {
+            uploadContainer.style.borderColor = 'var(--border)';
+            uploadContainer.style.backgroundColor = '';
+        }
+        
+        uploadContainer.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    if (files[i].type === 'application/pdf') {
+                        addFileToList(files[i]);
+                    } else {
+                        alert('Please upload PDF files only.');
+                    }
+                }
+                
+                compareButton.disabled = fileList.children.length < 2;
+            }
+        }
+
+        // Compare button functionality
+        compareButton.addEventListener('click', () => {
+            alert('Comparing documents... This feature would connect to your backend system.');
+        });
+
+        // Upload container click functionality
+        uploadContainer.addEventListener('click', () => {
+            fileUpload.click();
+        });
+    </script>
+</body>
+</html>
