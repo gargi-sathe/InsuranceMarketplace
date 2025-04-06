@@ -1,0 +1,163 @@
+<!-- with multiple PDFs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat with Insurance PDFs</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
+
+    .header {
+      background-color: #4A90E2;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-log {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      max-width: 75%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      background-color: #DCF8C6;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .bot {
+      background-color: #f1f0f0;
+      align-self: flex-start;
+      margin-right: auto;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input textarea {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      height: 60px;
+    }
+
+    .chat-input button {
+      margin-left: 10px;
+      padding: 0 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4A90E2;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .clear-button {
+      background-color: #FF5C5C;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      📄 Chat with Insurance PDFs
+      <button class="clear-button" onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <div class="chat-log" id="chat-log"></div>
+
+    <div class="chat-input">
+      <textarea id="user-input" placeholder="Ask your Insurance Related questions..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatLog = document.getElementById('chat-log');
+    const userInput = document.getElementById('user-input');
+
+    function appendMessage(sender, text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      messageDiv.textContent = text;
+      chatLog.appendChild(messageDiv);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      appendMessage('user', message);
+      userInput.value = '';
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+
+        if (data.reply) {
+          appendMessage('bot', data.reply);
+        } else if (data.error) {
+          appendMessage('bot', `[Error] ${data.error}`);
+        }
+
+      } catch (err) {
+        appendMessage('bot', '[Error] Failed to fetch response from server.');
+      }
+    }
+
+    async function clearChat() {
+      await fetch('/clear', { method: 'POST' });
+      chatLog.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
