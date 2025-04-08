@@ -18,7 +18,7 @@ import threading
 
 from neo4j import GraphDatabase
 
-GROQ_API_KEY = ["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","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","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","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","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","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","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","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","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","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","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","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"]
+GROQ_API_KEY = []
 g_llm = OllamaLLM(model="gemma3:12b")
 token_l=len(GROQ_API_KEY)
 URI = "bolt://localhost:7687"  # Adjust if using a remote instance
@@ -29,7 +29,7 @@ groq_model_l="llama3-70b-8192"
 COUNT=0
 TOKEN_LIMIT=4000
 MAX_WORKERS = 10
-GEMINI_API_KEY = "AIzaSyBGiXOgo7MqY2Z86C2hU0H3y1sSQPh-Ywk"  # Replace with your actual API key
+GEMINI_API_KEY = ""  # Replace with your actual API key
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
 
 
