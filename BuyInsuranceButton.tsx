@@ -5,30 +5,82 @@ import { ArrowRight } from "lucide-react";
 
 export default function BuyInsuranceButton() {
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [documentsRequired, setDocumentsRequired] = useState<string[]>([]);
+
+  // Mapping insurance options to document requirements
+  const insuranceDocuments: { [key: string]: string[] } = {
+    "Aetna Medical Insurance": [
+      "Proof of Identity (Driver's License, Passport)",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification (Pay stubs, Tax returns)",
+      "Proof of Address (Utility bill, Lease agreement)",
+      "Health Information (Medical history, prescriptions)"
+    ],
+    "Blue Cross and Blue Shield": [
+      "Proof of Identity",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Proof of Address",
+      "Current Health Insurance Information"
+    ],
+    "Humana Medical Insurance": [
+      "Proof of Identity",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Proof of Address",
+      "Health History"
+    ],
+    "Cigna": [
+      "Proof of Identity",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Health Information",
+      "Proof of Address"
+    ],
+    "AARP": [
+      "Proof of Identity",
+      "Proof of Age",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Proof of Address"
+    ],
+    "Medica": [
+      "Proof of Identity",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Proof of Address",
+      "Health Information"
+    ],
+    "WellCare": [
+      "Proof of Identity",
+      "Proof of Citizenship or Legal Residency",
+      "Income Verification",
+      "Proof of Address"
+    ]
+  };
 
   const handleBuyInsurance = () => {
-    // Redirect based on the selected option
     let url = "";
     switch (selectedOption) {
       case "Aetna Medical Insurance":
-        url = "https://enrollmedicare.aetna.com/s/shop?tfn=&ZipCode=60607&CountyFIPS=17031&PlanYear=2025&step=PlanList"; // Link for "One"
+        url = "https://enrollmedicare.aetna.com/s/shop?tfn=&ZipCode=60607&CountyFIPS=17031&PlanYear=2025&step=PlanList";
         break;
       case "Blue Cross and Blue Shield":
-        url = "https://www.bcbsil.com/medicare"; // Link for "Two"
+        url = "https://www.bcbsil.com/medicare";
         break;
       case "Humana Medical Insurance":
-        url = "https://shop.humana-medicareadvantage.com/?pspt=4ce0d070-2601-11f0-b20c-0db53d0967c7&tfn=800-395-8346&app=TZINS10&siteleadid=cb26373f-32e3-4852-83d3-52d246e25179&matchstatus=Unmatched&utm_medium=cpc&utm_source=google&utm_campaign=google&gclid=Cj0KCQjwlMfABhCWARIsADGXdy8kR5rBNJ6jhaoPSGjSrYE_nEOoKyYKhBN3NHsMElgzZS1uQ4PY36kaAuVYEALw_wcB#/plans/60608/17031/MAPD"; // Link for "Three"
+        url = "https://shop.humana-medicareadvantage.com/?pspt=4ce0d070-2601-11f0-b20c-0db53d0967c7";
         break;
       case "Cigna":
-        url = "https://plans.cigna.com/?zip=60608&fip=17031&PlanType=MAPD&customer_id=202-369-9026&utm_campaign=0316145&utm_source=Search&campaign_ID=0316145&utm_medium=Search&sid=0316145&PID=ps_17_25447&customtrack1=0316145&gad_source=1&gbraid=0AAAAADuABamTciPq42pd_5qJiYhFNVD9e&gclid=Cj0KCQjwlMfABhCWARIsADGXdy_shDw3jtGMRIu4QOuMfSZWRGngNhF9KbPLFI-gQHTubywndFL321waAjm3EALw_wcB&gclsrc=aw.ds"; // Link for "Four"
+        url = "https://plans.cigna.com/?zip=60608&fip=17031&PlanType=MAPD";
         break;
       case "AARP":
-        url = "https://www.aarpmedicareplans.com/health-plans/plan-summary/60608/031/2025#MA"; // Link for "Five"
+        url = "https://www.aarpmedicareplans.com/health-plans/plan-summary/60608/031/2025#MA";
         break;
       case "Medica":
         url = "https://medica.isf.io/2025/g/7876cf047cb74e33aaecd5e44ff17615/AssistedShopping?step=3";
         break;
-      case "Wellcare":
+      case "WellCare":
         url = "https://www.wellcare.com/en/illinois/need-a-plan";
         break;
       default:
@@ -36,6 +88,13 @@ export default function BuyInsuranceButton() {
         return;
     }
     window.location.href = url;
+  };
+
+  // Update documents list when an option is selected
+  const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = e.target.value;
+    setSelectedOption(selected);
+    setDocumentsRequired(insuranceDocuments[selected] || []);
   };
 
   return (
@@ -49,7 +108,7 @@ export default function BuyInsuranceButton() {
       <select
         className="mt-4 p-2 border border-gray-300 rounded"
         value={selectedOption}
-        onChange={(e) => setSelectedOption(e.target.value)}
+        onChange={handleOptionChange}
       >
         <option value="">Select an option</option>
         <option value="Aetna Medical Insurance">Aetna Medical Insurance</option>
@@ -58,17 +117,28 @@ export default function BuyInsuranceButton() {
         <option value="Cigna">Cigna</option>
         <option value="AARP">AARP</option>
         <option value="Medica">Medica</option>
-        <option value="Wellcare">Wellcare</option>
+        <option value="WellCare">WellCare</option>
       </select>
+
+      {/* Displaying documents required based on the selected insurance */}
+      {selectedOption && (
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold">Documents Required:</h3>
+          <ul className="list-disc pl-6">
+            {documentsRequired.map((doc, index) => (
+              <li key={index} className="text-muted-foreground">{doc}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Redirect button */}
       <button
         onClick={handleBuyInsurance}
-        className="mt-4 text-lg px-8 py-6 h-auto font-semibold bg-black text-white rounded-full"
+        className="mt-4 text-lg px-8 py-6 h-auto font-semibold bg-black text-white rounded-full flex items-center justify-center space-x-2"
       >
         Buy Insurance Now <ArrowRight className="ml-2 h-5 w-5" />
       </button>
     </div>
   );
 }
-
